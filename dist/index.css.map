@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../node_modules/.pnpm/swiper@9.2.0/node_modules/swiper/modules/effect-fade/effect-fade.min.css"],
+  "sourcesContent": [".swiper-fade.swiper-free-mode .swiper-slide{transition-timing-function:ease-out}.swiper-fade .swiper-slide{pointer-events:none;transition-property:opacity}.swiper-fade .swiper-slide .swiper-slide{pointer-events:none}.swiper-fade .swiper-slide-active,.swiper-fade .swiper-slide-active .swiper-slide-active{pointer-events:auto}"],
+  "mappings": ";AAAA;AAA4C;AAAA;AAAoC;AAA2B;AAAoB;AAAA;AAA4B;AAAyC;AAAA;AAAoB;AAAA;AAAyF;AAAA;",
+  "names": []
+}

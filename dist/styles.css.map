@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../src/styles.css"],
+  "sourcesContent": ["import 'swiper/css';\nimport 'swiper/css/effect-cards';"],
+  "mappings": ";AAAA;AAAA;",
+  "names": []
+}
