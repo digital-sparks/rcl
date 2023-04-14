@@ -3,6 +3,11 @@ import 'swiper/css/effect-fade';
 import Lenis from '@studio-freight/lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import createShadow from 'node_modules/swiper/shared/create-shadow.js';
+import effectInit from 'node_modules/swiper/shared/effect-init.js';
+import effectTarget from 'node_modules/swiper/shared/effect-target.js';
+import effectVirtualTransitionEnd from 'node_modules/swiper/shared/effect-virtual-transition-end.js';
+import { getSlideTransformEl } from 'node_modules/swiper/shared/utils.js';
 import { PowerGlitch } from 'powerglitch';
 import Swiper, { EffectCards, EffectFade, Navigation, Pagination } from 'swiper';
 
@@ -191,7 +196,7 @@ window.Webflow.push(async () => {
     centeredSlides: true,
     cardsEffect: {
       rotate: true,
-      perSlideRotate: 1,
+      perSlideRotate: 3,
       perSlideOffset: 2,
       slideShadows: false,
     },
@@ -205,7 +210,8 @@ window.Webflow.push(async () => {
       },
     },
     on: {
-      init: function (swiper) {
+      afterInit: function (swiper) {
+        console.log(swiper.params.speed);
         // console.log(swiper);
         // console.log(swiper.slidesEl);
         // const randomRotation = [];
@@ -220,9 +226,19 @@ window.Webflow.push(async () => {
   });
 
   const collectionCards = document.querySelectorAll('.collection-card_component');
+  let zIndex = 4;
 
   collectionCards.forEach((collectionCard: Element) => {
     const rgbColor = collectionCard.querySelector('.collection-card_face')?.style?.borderColor;
+
+    collectionCard.addEventListener('mouseover', function () {
+      collectionCard.parentNode.style.zIndex = zIndex;
+      zIndex++;
+    });
+    // collectionCard.addEventListener('mouseout', function () {
+    //   const baseZindex = collectionCard.parentNode.getAttribute('data-z-index');
+    //   collectionCard.parentNode.style.zIndex = baseZindex;
+    // });
 
     collectionCard.addEventListener('click', function () {
       const faceWrap = this.querySelector('.collection-card_faces-wrap');
@@ -232,6 +248,9 @@ window.Webflow.push(async () => {
           const card = collectionCard.querySelector('.collection-card_faces-wrap');
           gsap.to(card, { rotationY: 0, duration: 0.6, ease: 'sine.out' });
           collectionCard.removeAttribute('data-clicked');
+
+          // const baseZindex = collectionCard.parentNode.getAttribute('data-z-index');
+          // collectionCard.parentNode.style.zIndex = baseZindex;
         });
 
         this.setAttribute('data-clicked', 'true');
@@ -370,10 +389,13 @@ window.Webflow.push(async () => {
     };
 
     panel.querySelector('.panel_box-component').style.minHeight = size.height + 'px';
-    panel.querySelector('.panel_box_padding').style.minWidth = size.width + 'px';
+
     if (panel.querySelector('.panel_box_loader') != null) {
+      panel.querySelector('.panel2_box_padding').style.minWidth = size.width + 'px';
       panel.querySelector('.panel_box_loader').style.minWidth = size.width + 'px';
       panel.querySelectorAll('[type-el=""]').textContent = '';
+    } else {
+      panel.querySelector('.panel_box_padding').style.minWidth = size.width + 'px';
     }
 
     const panelEl = panel.querySelector('.panel_box_width');
@@ -510,9 +532,9 @@ window.Webflow.push(async () => {
         wrapperClass: 'team-card_wrapper',
         slideClass: 'team-card_slide',
         slidesPerView: 'auto',
-        speed: 600,
+        speed: 500,
         centeredSlides: true,
-        spaceBetween: 40,
+        spaceBetween: 48,
         loop: true,
         grabCursor: true,
         autoHeight: false,
@@ -527,6 +549,14 @@ window.Webflow.push(async () => {
           1200: {
             enabled: false,
             centeredSlides: false,
+          },
+          991: {
+            spaceBetween: 80,
+            speed: 700,
+          },
+          768: {
+            spaceBetween: 64,
+            speed: 650,
           },
         },
         // keyboard: true,
