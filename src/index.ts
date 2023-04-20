@@ -68,6 +68,165 @@ window.Webflow.push(async () => {
     pulse: true,
   });
 
+  PowerGlitch.glitch('.panel_corner_svg', {
+    playMode: 'always',
+    createContainers: true,
+    hideOverflow: false,
+    timing: {
+      duration: 5000,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 1,
+    },
+    shake: {
+      velocity: 7,
+      amplitudeX: 0.025,
+      amplitudeY: 0.025,
+    },
+    slice: {
+      count: 1,
+      velocity: 8,
+      minHeight: 0.05,
+      maxHeight: 0.5,
+      hueRotate: false,
+    },
+  });
+
+  document.querySelectorAll('.faq_toggle').forEach((faqToggle) => {
+    const faqTitle = faqToggle.querySelector('.faq_title');
+    const { startGlitch, stopGlitch } = PowerGlitch.glitch(faqTitle, {
+      playMode: 'hover',
+      createContainers: true,
+      hideOverflow: false,
+      timing: {
+        duration: 5000,
+        iterations: 10,
+      },
+      glitchTimeSpan: {
+        start: 0,
+        end: 1,
+      },
+      shake: {
+        velocity: 8,
+        amplitudeX: 0.01,
+        amplitudeY: 0.015,
+      },
+      slice: {
+        count: 1,
+        velocity: 9.5,
+        minHeight: 0.02,
+        maxHeight: 0.3,
+        hueRotate: false,
+      },
+      pulse: false,
+    });
+
+    faqToggle.addEventListener('mouseover', function () {
+      startGlitch();
+    });
+    faqToggle.addEventListener('mouseout', () => {
+      stopGlitch();
+    });
+  });
+
+  document.querySelectorAll('.button').forEach((button) => {
+    const buttonText = button.querySelector('.button_text-wrap');
+
+    const { startGlitch, stopGlitch } = PowerGlitch.glitch(buttonText, {
+      playMode: 'hover',
+      createContainers: true,
+      hideOverflow: false,
+      timing: {
+        duration: 5000,
+        iterations: 10,
+      },
+      glitchTimeSpan: {
+        start: 0,
+        end: 1,
+      },
+      shake: {
+        velocity: 8,
+        amplitudeX: 0.015,
+        amplitudeY: 0.025,
+      },
+      slice: {
+        count: 1,
+        velocity: 9.5,
+        minHeight: 0.02,
+        maxHeight: 0.3,
+        hueRotate: false,
+      },
+      pulse: false,
+    });
+
+    PowerGlitch.glitch(button, {
+      playMode: 'hover',
+      createContainers: true,
+      hideOverflow: false,
+      timing: {
+        duration: 5000,
+        iterations: 10,
+      },
+      glitchTimeSpan: {
+        start: 0,
+        end: 1,
+      },
+      shake: {
+        velocity: 4,
+        amplitudeX: 0.015,
+        amplitudeY: 0.015,
+      },
+      slice: false,
+      pulse: false,
+    });
+
+    button.addEventListener('mouseover', function () {
+      startGlitch();
+    });
+    button.addEventListener('mouseout', () => {
+      stopGlitch();
+    });
+  });
+
+  PowerGlitch.glitch('.portal_component', {
+    playMode: 'always',
+    createContainers: true,
+    hideOverflow: false,
+    timing: {
+      duration: 5000,
+      iterations: 10,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 1,
+    },
+    shake: {
+      velocity: 4,
+      amplitudeX: 0.005,
+      amplitudeY: 0.005,
+    },
+    slice: false,
+    pulse: false,
+  });
+
+  const randomTeamCard = () => {
+    const randomCard = Math.floor(
+      1 + Math.random() * document.querySelectorAll('.team-card_slide').length
+    );
+    console.log(randomCard);
+    const element = document.querySelector(
+      `.team-card_slide:nth-child(${randomCard}) .team-card_component`
+    );
+    document.querySelectorAll('.team-card_component').forEach((element) => {
+      element.classList.remove('flicker-slow');
+    });
+    element?.classList.add('flicker-slow');
+
+    setTimeout(randomTeamCard, 5000 + Math.random() * 3000);
+  };
+  randomTeamCard();
+
   // smooth page scroll
   const pageScroller = new Lenis({
     wrapper: window,
@@ -162,7 +321,9 @@ window.Webflow.push(async () => {
             let v = pageScroller.velocity * 0.5; // self.getVelocity() * 0.006;
             v = gsap.utils.clamp(-60, 60, v);
             const scrubTimeline = gsap.timeline({
-              onUpdate: () => marqueeTimeline.timeScale(scrubObject.value),
+              onUpdate: () => {
+                marqueeTimeline.timeScale(scrubObject.value);
+              },
             });
             scrubTimeline.fromTo(
               scrubObject,
@@ -311,7 +472,8 @@ window.Webflow.push(async () => {
 
   class TextScramble {
     constructor(el) {
-      this.el = el;
+      this.el = el[0];
+      this.elAll = el;
       this.chars = '!<>-_\\/[]{}—=+*^?#________';
       this.update = this.update.bind(this);
     }
@@ -323,9 +485,10 @@ window.Webflow.push(async () => {
       for (let i = 0; i < length; i++) {
         const from = oldText[i] || '';
         const to = newText[i] || '';
-        const start = Math.floor(Math.random() * 40);
-        const end = start + Math.floor(Math.random() * 40);
-        this.queue.push({ from, to, start, end });
+        const start = Math.floor(Math.random() * 70);
+        const end = start + Math.floor(Math.random() * 70);
+        const random = Math.random();
+        this.queue.push({ from, to, start, end, random });
       }
       cancelAnimationFrame(this.frameRequest);
       this.frame = 0;
@@ -341,16 +504,18 @@ window.Webflow.push(async () => {
           complete++;
           output += to;
         } else if (this.frame >= start) {
-          if (!char || Math.random() < 0.28) {
-            char = this.randomChar();
+          if (!char || Math.random() < 0.05) {
+            char = this.queue[i].random < 0.05 ? this.randomChar() : to;
             this.queue[i].char = char;
           }
-          output += `<span class="dud">${char}</span>`;
+          output += `<span>${char}</span>`;
         } else {
           output += from;
         }
       }
-      this.el.innerHTML = output;
+      this.elAll.forEach((element) => {
+        element.innerHTML = output;
+      });
       if (complete === this.queue.length) {
         this.resolve();
       } else {
@@ -363,20 +528,17 @@ window.Webflow.push(async () => {
     }
   }
 
-  // ——————————————————————————————————————————————————
-  // Example
-  // ——————————————————————————————————————————————————
+  document.querySelectorAll('[text-effect=scramble]').forEach((text) => {
+    const phrase = text.querySelector('div')?.innerText;
+    const fx = new TextScramble(text.querySelectorAll('div'));
 
-  const phrases = ['Incoming Transmission'];
-
-  const el = document.querySelectorAll('[type-el]');
-
-  const next = () => {
-    el.forEach((item) => {
-      const fx = new TextScramble(item);
-      fx.setText(phrases[0]);
-    });
-  };
+    const next = () => {
+      fx.setText(phrase).then(() => {
+        setTimeout(next, 2000);
+      });
+    };
+    next();
+  });
 
   ////
 
@@ -452,7 +614,7 @@ window.Webflow.push(async () => {
         {
           width: 0,
           duration: 0,
-          onComplete: next,
+          // onComplete: next,
         },
         {
           width: '100%',
@@ -633,4 +795,57 @@ window.Webflow.push(async () => {
       },
     },
   });
+
+  // const cardsAnimation = gsap
+  //   .timeline({
+  //     scrollTrigger: {
+  //       trigger: '.section_collection-cards',
+  //       start: 'top bottom',
+  //       end: 'bottom top',
+  //       scrub: true,
+  //     },
+  //   })
+  //   .to('[data-collection-card-order="1"]', { yPercent: 20 }, 0);
+
+  // ScrollTrigger.create({
+  //   trigger: '.section_collection-cards',
+  //   start: 'top bottom',
+  //   end: 'bottom top',
+  //   // onToggle: self => console.log("toggled, isActive:", self.isActive),
+  //   onUpdate: (self) => {
+  //     const velocity = self.getVelocity() * 0.01;
+  //     const amount = gsap.utils.clamp(-10, 10, velocity);
+  //     console.log(amount);
+  //     gsap.to('.collection-card_component', {
+  //       yPercent: amount,
+  //       ease: 'power1',
+  //       duration: 0.2,
+  //       overwrite: true,
+  //     });
+  //   },
+  // });
+
+  const proxy = { skew: 0 },
+    skewSetter = gsap.quickSetter('.team-card_component', 'skewY', 'deg'), // fast
+    clamp = gsap.utils.clamp(-2, 2); // don't let the skew go beyond 20 degrees.
+
+  ScrollTrigger.create({
+    onUpdate: (self) => {
+      const skew = clamp(self.getVelocity() / -300);
+      // only do something if the skew is MORE severe. Remember, we're always tweening back to 0, so if the user slows their scrolling quickly, it's more natural to just let the tween handle that smoothly rather than jumping to the smaller skew.
+      if (Math.abs(skew) > Math.abs(proxy.skew)) {
+        proxy.skew = skew;
+        gsap.to(proxy, {
+          skew: 0,
+          duration: 0.8,
+          ease: 'power3',
+          overwrite: true,
+          onUpdate: () => skewSetter(proxy.skew),
+        });
+      }
+    },
+  });
+
+  // make the right edge "stick" to the scroll bar. force3D: true improves performance
+  gsap.set('.team-card_component', { transformOrigin: 'right center', force3D: true });
 });
