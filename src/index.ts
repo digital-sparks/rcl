@@ -2,6 +2,7 @@ import 'swiper/css/effect-fade';
 
 import Lenis from '@studio-freight/lenis';
 import { gsap } from 'gsap';
+import { CustomEase } from 'gsap/all';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import createShadow from 'node_modules/swiper/shared/create-shadow.js';
 import effectInit from 'node_modules/swiper/shared/effect-init.js';
@@ -12,10 +13,10 @@ import { PowerGlitch } from 'powerglitch';
 import Swiper, { EffectCards, EffectFade, Navigation, Pagination } from 'swiper';
 
 gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(CustomEase);
 
 window.Webflow ||= [];
 window.Webflow.push(async () => {
-  console.log(window.Webflow.scroll);
   PowerGlitch.glitch('.logo svg', {
     playMode: 'always',
     createContainers: true,
@@ -89,6 +90,31 @@ window.Webflow.push(async () => {
       velocity: 8,
       minHeight: 0.05,
       maxHeight: 0.5,
+      hueRotate: false,
+    },
+  });
+
+  PowerGlitch.glitch('.prefooter_logo.is-back', {
+    playMode: 'always',
+    createContainers: true,
+    hideOverflow: false,
+    timing: {
+      duration: 5000,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 1,
+    },
+    shake: {
+      velocity: 5,
+      amplitudeX: 0.025,
+      amplitudeY: 0.025,
+    },
+    slice: {
+      count: 1,
+      velocity: 7,
+      minHeight: 0.05,
+      maxHeight: 0.35,
       hueRotate: false,
     },
   });
@@ -189,6 +215,60 @@ window.Webflow.push(async () => {
     });
   });
 
+  PowerGlitch.glitch('.footer_back', {
+    playMode: 'hover',
+    createContainers: true,
+    hideOverflow: false,
+    timing: {
+      duration: 5000,
+      iterations: 10,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 1,
+    },
+    shake: {
+      velocity: 4,
+      amplitudeX: 0.0075,
+      amplitudeY: 0.0075,
+    },
+    slice: {
+      count: 1,
+      velocity: 9.5,
+      minHeight: 0.02,
+      maxHeight: 0.3,
+      hueRotate: false,
+    },
+    pulse: false,
+  });
+
+  PowerGlitch.glitch('.social-link_icon', {
+    playMode: 'hover',
+    createContainers: true,
+    hideOverflow: false,
+    timing: {
+      duration: 5000,
+      iterations: 10,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 1,
+    },
+    shake: {
+      velocity: 4,
+      amplitudeX: 0.075,
+      amplitudeY: 0.075,
+    },
+    slice: {
+      count: 1,
+      velocity: 9.5,
+      minHeight: 0.02,
+      maxHeight: 0.3,
+      hueRotate: false,
+    },
+    pulse: false,
+  });
+
   PowerGlitch.glitch('.portal_component', {
     playMode: 'always',
     createContainers: true,
@@ -214,7 +294,6 @@ window.Webflow.push(async () => {
     const randomCard = Math.floor(
       1 + Math.random() * document.querySelectorAll('.team-card_slide').length
     );
-    console.log(randomCard);
     const element = document.querySelector(
       `.team-card_slide:nth-child(${randomCard}) .team-card_component`
     );
@@ -239,7 +318,7 @@ window.Webflow.push(async () => {
     requestAnimationFrame(raf);
   }
 
-  const scrollLinks = document.querySelectorAll('.scroll-navigation_link');
+  const scrollLinks = document.querySelectorAll('.scroll-navigation_link, .footer_back');
 
   scrollLinks.forEach((link, index) => {
     const target: string = link.getAttribute('href') || '';
@@ -249,7 +328,7 @@ window.Webflow.push(async () => {
       e.preventDefault();
       pageScroller.scrollTo(target, {
         lerp: 0.04,
-        duration: 5,
+        // duration: 5,
       });
     });
   });
@@ -370,9 +449,12 @@ window.Webflow.push(async () => {
         enabled: false,
       },
     },
+    navigation: {
+      prevEl: '.swiper_button-prev',
+      nextEl: '.swiper_button-next',
+    },
     on: {
       afterInit: function (swiper) {
-        console.log(swiper.params.speed);
         // console.log(swiper);
         // console.log(swiper.slidesEl);
         // const randomRotation = [];
@@ -383,7 +465,7 @@ window.Webflow.push(async () => {
       },
     },
     // keyboard: true,
-    modules: [EffectCards],
+    modules: [EffectCards, Navigation],
   });
 
   const collectionCards = document.querySelectorAll('.collection-card_component');
@@ -505,7 +587,7 @@ window.Webflow.push(async () => {
           output += to;
         } else if (this.frame >= start) {
           if (!char || Math.random() < 0.05) {
-            char = this.queue[i].random < 0.05 ? this.randomChar() : to;
+            char = this.queue[i].random < 0.1 ? this.randomChar() : to;
             this.queue[i].char = char;
           }
           output += `<span>${char}</span>`;
@@ -529,18 +611,107 @@ window.Webflow.push(async () => {
   }
 
   document.querySelectorAll('[text-effect=scramble]').forEach((text) => {
+    const duration = text.getAttribute('text-effect-duration') || 2000;
     const phrase = text.querySelector('div')?.innerText;
     const fx = new TextScramble(text.querySelectorAll('div'));
 
     const next = () => {
       fx.setText(phrase).then(() => {
-        setTimeout(next, 2000);
+        setTimeout(next, duration);
       });
     };
     next();
   });
 
   ////
+
+  const panelSwiper = new Swiper('.panel_box_container', {
+    // wrapperClass: 'panel_wrapper',
+    // slideClass: 'panel_slide',
+    slidesPerView: 1,
+    effect: 'fade',
+    fadeEffect: {
+      crossFade: true,
+    },
+    speed: 1000,
+    centeredSlides: true,
+    grabCursor: false,
+    autoHeight: false,
+    pagination: {
+      el: '.swiper-pagination-wrap',
+      bulletClass: 'bullet-large',
+      bulletActiveClass: 'is-active',
+      clickable: true,
+      type: 'bullets',
+    },
+    navigation: {
+      nextEl: '.swiper_button-next',
+      prevEl: '.swiper_button-prev',
+    },
+    breakpoints: {
+      991: {
+        allowTouchMove: false,
+        autoHeight: false,
+      },
+    },
+    // keyboard: true,
+    modules: [Pagination, Navigation, EffectFade],
+    on: {
+      slideChangeTransitionStart(swiper) {
+        const panelEl = document.querySelector('.panel_box_width');
+
+        setTimeout(() => {
+          switch (swiper.realIndex) {
+            case 0:
+              document.querySelectorAll('.date_ticker > div').forEach((element) => {
+                element.textContent = '10312022';
+              });
+              break;
+            case 1:
+              document.querySelectorAll('.date_ticker > div').forEach((element) => {
+                element.textContent = '11242022';
+              });
+              break;
+            case 2:
+              document.querySelectorAll('.date_ticker > div').forEach((element) => {
+                element.textContent = '12252022';
+              });
+              break;
+            default:
+              document.querySelectorAll('.date_ticker > div').forEach((element) => {
+                element.textContent = '10312022';
+              });
+          }
+        }, 250);
+
+        const tl = gsap.timeline();
+        tl.to(panelEl, {
+          // delay: 0.15,
+          duration: 0.5,
+          ease: 'power2.out',
+          width: '0%',
+        })
+          .to(panelEl, {
+            // delay: 0.1,
+            duration: 0.2,
+            ease: 'power2.out',
+            height: '0',
+          })
+          .to(panelEl, {
+            delay: 0.05,
+            duration: 0.3,
+            ease: 'power2.out',
+            height: 'auto',
+          })
+          .to(panelEl, {
+            // delay: 0.1,
+            duration: 0.6,
+            ease: 'power2.out',
+            width: '100%',
+          });
+      },
+    },
+  });
 
   const panelComponents = document.querySelectorAll('.panel_component');
 
@@ -567,19 +738,18 @@ window.Webflow.push(async () => {
       .timeline({
         scrollTrigger: {
           trigger: panel,
-          start: 'top 50%', // 10% of .panel2 enters the bottom of the viewport
+          start: 'top 60%', // 10% of .panel2 enters the bottom of the viewport
         },
       })
       .fromTo(
         panelEl,
         {
-          // duration: 0,
           height: 0,
           width: 0,
         },
         {
           height: 'auto',
-          duration: 0.4,
+          duration: 0.3,
           ease: 'power2.out',
         }
       )
@@ -595,7 +765,6 @@ window.Webflow.push(async () => {
           transform: 'scale(1)',
           opacity: 1,
           duration: 0.4,
-          // delay: 0.1,
           ease: 'power2.out',
         }
       )
@@ -603,39 +772,56 @@ window.Webflow.push(async () => {
         panelEl,
         {
           delay: 0.05,
-          duration: 1.2,
+          duration: 0.75,
           ease: 'power2.out',
           width: '100%',
         },
         '<'
-      )
+      ) // after this comes code for the preloader
       .fromTo(
-        '.div-block-28',
+        '.loading-bar_active',
         {
           width: 0,
           duration: 0,
-          // onComplete: next,
         },
         {
           width: '100%',
-          duration: 2,
+          duration: 3,
           delay: 0.1,
-          ease: 'power2.out',
+          ease: CustomEase.create(
+            'custom',
+            'M0,0 C0,0 0.05,0.05 0.129,0.129 0.14,0.14 0.173,0.137 0.186,0.15 0.205,0.169 0.198,0.214 0.22,0.236 0.241,0.258 0.316,0.281 0.34,0.305 0.375,0.341 0.387,0.434 0.424,0.472 0.444,0.492 0.491,0.471 0.512,0.492 0.542,0.521 0.556,0.592 0.586,0.622 0.617,0.654 0.691,0.662 0.722,0.692 0.765,0.733 0.79,0.811 0.824,0.848 0.928,0.959 1,1 1,1 '
+          ),
+          onInit: function () {
+            const el = document.querySelectorAll('.incoming-transmission-text');
+            const text = el[0]?.textContent;
+            const fx = new TextScramble(el, 5);
+            fx.setText(text);
+          },
         }
       )
       .to('.panel_box_loader', {
         opacity: 0,
+        duration: 1,
+        delay: 0.5,
         onComplete: function () {
           document.querySelector('.panel_box_loader').style.display = 'none';
         },
       })
       .fromTo(
-        '.panel_box_container',
+        [
+          '.panel_box_container .panel_box_wrapper',
+          '.panel_box_container .swiper-pagination-wrap',
+          '.panel_box_container .swiper_buttons-wrap',
+          '.date_component',
+          '.og-unknown_component',
+        ],
         {
           opacity: 0,
         },
         {
           opacity: 1,
+          duration: 0.5,
         },
         '<'
       );
@@ -643,20 +829,27 @@ window.Webflow.push(async () => {
 
   function updatePanelWidth() {
     panelComponents.forEach((panel) => {
-      panel.querySelector('.panel_box_padding').style.minWidth =
-        panel.querySelector('.panel_box-component')?.clientWidth + 'px';
+      console.log(panel);
+
       if (panel.querySelector('.panel_box_loader') != null) {
         panel.querySelector('.panel_box_loader').style.minWidth = '0px';
+        panel.querySelector('.panel2_box_padding').style.minWidth =
+          panel.querySelector('.panel_box-component')?.clientWidth + 'px';
+      } else {
+        panel.querySelector('.panel_box_padding').style.minWidth =
+          panel.querySelector('.panel_box-component')?.clientWidth + 'px';
       }
 
       panel.querySelector('.panel_box-component').style.minHeight =
-        panel.querySelector('.panel_box_width')?.clientHeight + 'px';
+        panel.querySelector('.panel_box_width')?.clientHeight + 4 + 'px';
     });
   }
 
-  const pagination: Element = document.querySelector('[swiper="pagination"]');
-  const swiperContainer: Element = document.querySelector('[swiper="container"]');
-  swiperContainer?.append(pagination);
+  const pagination = document.querySelectorAll('[swiper="pagination"]');
+  pagination.forEach((paginateEl) => {
+    const swiperContainer = paginateEl.previousElementSibling;
+    swiperContainer?.append(paginateEl);
+  });
 
   /*----------------------------*/
   /* UPDATE ON RESIZE           */
@@ -672,7 +865,7 @@ window.Webflow.push(async () => {
     resizeTimeout = setTimeout(() => {
       currentWindowWidth = document.documentElement.clientWidth;
       if (oldWindowWidth !== currentWindowWidth) {
-        console.log(currentWindowWidth);
+        console.log('updated window size');
         swiperCard(currentWindowWidth);
         oldWindowWidth = currentWindowWidth;
         updatePanelWidth();
@@ -722,108 +915,13 @@ window.Webflow.push(async () => {
           },
         },
         // keyboard: true,
-        modules: [Pagination],
+        modules: [Pagination, Navigation],
       });
     } else if (windowWidth > 1200 && initTeamCardSwiper) {
       teamCardSwiper.destroy(true, true);
       initTeamCardSwiper = false;
     }
   }
-
-  // alert('hi');
-
-  const panelSwiper = new Swiper('.panel_box_container', {
-    // wrapperClass: 'panel_wrapper',
-    // slideClass: 'panel_slide',
-    slidesPerView: 1,
-    effect: 'fade',
-    fadeEffect: {
-      crossFade: true,
-    },
-    speed: 1000,
-    centeredSlides: true,
-    grabCursor: false,
-    autoHeight: false,
-    pagination: {
-      el: '.swiper-pagination-wrap',
-      bulletClass: 'bullet-large',
-      bulletActiveClass: 'is-active',
-      clickable: true,
-      type: 'bullets',
-    },
-    navigation: {
-      nextEl: '.swiper_button-next',
-      prevEl: '.swiper_button-prev',
-    },
-    breakpoints: {
-      991: {
-        allowTouchMove: false,
-        autoHeight: false,
-      },
-    },
-    // keyboard: true,
-    modules: [Pagination, Navigation, EffectFade],
-    on: {
-      slideChangeTransitionStart(swiper) {
-        const panelEl = document.querySelector('.panel_box_width');
-
-        const tl = gsap.timeline();
-        tl.to(panelEl, {
-          // delay: 0.15,
-          duration: 0.5,
-          ease: 'power2.out',
-          width: '0%',
-        })
-          .to(panelEl, {
-            // delay: 0.1,
-            duration: 0.2,
-            ease: 'power2.out',
-            height: '0',
-          })
-          .to(panelEl, {
-            delay: 0.05,
-            duration: 0.3,
-            ease: 'power2.out',
-            height: 'auto',
-          })
-          .to(panelEl, {
-            // delay: 0.1,
-            duration: 0.6,
-            ease: 'power2.out',
-            width: '100%',
-          });
-      },
-    },
-  });
-
-  // const cardsAnimation = gsap
-  //   .timeline({
-  //     scrollTrigger: {
-  //       trigger: '.section_collection-cards',
-  //       start: 'top bottom',
-  //       end: 'bottom top',
-  //       scrub: true,
-  //     },
-  //   })
-  //   .to('[data-collection-card-order="1"]', { yPercent: 20 }, 0);
-
-  // ScrollTrigger.create({
-  //   trigger: '.section_collection-cards',
-  //   start: 'top bottom',
-  //   end: 'bottom top',
-  //   // onToggle: self => console.log("toggled, isActive:", self.isActive),
-  //   onUpdate: (self) => {
-  //     const velocity = self.getVelocity() * 0.01;
-  //     const amount = gsap.utils.clamp(-10, 10, velocity);
-  //     console.log(amount);
-  //     gsap.to('.collection-card_component', {
-  //       yPercent: amount,
-  //       ease: 'power1',
-  //       duration: 0.2,
-  //       overwrite: true,
-  //     });
-  //   },
-  // });
 
   const proxy = { skew: 0 },
     skewSetter = gsap.quickSetter('.team-card_component', 'skewY', 'deg'), // fast
@@ -848,4 +946,61 @@ window.Webflow.push(async () => {
 
   // make the right edge "stick" to the scroll bar. force3D: true improves performance
   gsap.set('.team-card_component', { transformOrigin: 'right center', force3D: true });
+
+  // calculate distance
+  function getPositionAtCenter(element) {
+    const { top, left, width, height } = element.getBoundingClientRect();
+    return {
+      x: left + width / 2,
+      y: top + height / 2,
+    };
+  }
+
+  function getDistanceBetweenElements(a, b) {
+    const aPosition = getPositionAtCenter(a);
+    const bPosition = getPositionAtCenter(b);
+
+    return { xDistance: aPosition.x - bPosition.x, yDistance: aPosition.y - bPosition.y };
+    //return Math.hypot(aPosition.x - bPosition.x, aPosition.y - bPosition.y);
+  }
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '.section_collection-cards',
+      start: '10% bottom',
+      end: 'bottom 0%',
+      scrub: true,
+      // once: true,
+    },
+  });
+  // animate the container one way...
+
+  document
+    .querySelectorAll('.hide-mobile-landscape .collection-card_slide')
+    .forEach((collectionCard) => {
+      const distance = getDistanceBetweenElements(
+        document.querySelector('.collection-card_container'),
+        collectionCard
+      );
+
+      tl.from(collectionCard, {
+        x: distance.xDistance / 10,
+        y: distance.yDistance / 10,
+        rotate: 0,
+        opacity: 0,
+        duration: 0.01,
+        ease: 'power1.out',
+      });
+    });
+
+  document.querySelector('.date_circle')?.addEventListener('mouseenter', () => {
+    gsap.to('.date_circle_line', {
+      scaleY: 0.75,
+    });
+  });
+  document.querySelector('.date_circle')?.addEventListener('mouseleave', () => {
+    gsap.to('.date_circle_line', {
+      scaleY: 1,
+    });
+  });
 });
