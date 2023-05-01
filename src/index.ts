@@ -333,38 +333,38 @@ window.Webflow.push(async () => {
   };
   randomTeamCard();
 
-  // smooth page scroll
-  const pageScroller = new Lenis({
-    wrapper: window,
-    lerp: 0.2,
-    duration: 1.2,
-    infinite: false,
-  });
-  function raf(time) {
-    pageScroller.raf(time);
-    requestAnimationFrame(raf);
-  }
+  // // smooth page scroll
+  // const pageScroller = new Lenis({
+  //   wrapper: window,
+  //   lerp: 0.2,
+  //   duration: 1.2,
+  //   infinite: false,
+  // });
+  // function raf(time) {
+  //   pageScroller.raf(time);
+  //   requestAnimationFrame(raf);
+  // }
 
-  const scrollLinks = document.querySelectorAll('.scroll-navigation_link, .footer_back');
+  // const scrollLinks = document.querySelectorAll('.scroll-navigation_link, .footer_back');
 
-  scrollLinks.forEach((link, index) => {
-    const target: string = link.getAttribute('href') || '';
-    link.setAttribute('data-target', target);
-    link.removeAttribute('href');
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      pageScroller.scrollTo(target, {
-        lerp: 0.04,
-        // duration: 5,
-      });
-    });
-  });
-
-  // pageScroller.on('scroll', (e) => {
-  //   console.log(pageScroller);
+  // scrollLinks.forEach((link, index) => {
+  //   const target: string = link.getAttribute('href') || '';
+  //   link.setAttribute('data-target', target);
+  //   link.removeAttribute('href');
+  //   link.addEventListener('click', (e) => {
+  //     e.preventDefault();
+  //     pageScroller.scrollTo(target, {
+  //       lerp: 0.04,
+  //       // duration: 5,
+  //     });
+  //   });
   // });
 
-  requestAnimationFrame(raf);
+  // // pageScroller.on('scroll', (e) => {
+  // //   console.log(pageScroller);
+  // // });
+
+  // requestAnimationFrame(raf);
 
   // attribute value checker
   function attr(defaultVal, attrVal) {
