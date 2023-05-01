@@ -1,3 +1,4 @@
+import 'swiper/css';
 import 'swiper/css/effect-fade';
 
 import Lenis from '@studio-freight/lenis';
@@ -16,6 +17,7 @@ gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(CustomEase);
 
 window.Webflow ||= [];
+
 window.Webflow.push(async () => {
   PowerGlitch.glitch('.logo svg', {
     playMode: 'always',
@@ -94,7 +96,7 @@ window.Webflow.push(async () => {
     },
   });
 
-  PowerGlitch.glitch('.prefooter_logo.is-back', {
+  PowerGlitch.glitch('.prefooter_logo.is-back, .nav-overlay_logo.is-front', {
     playMode: 'always',
     createContainers: true,
     hideOverflow: false,
@@ -115,6 +117,31 @@ window.Webflow.push(async () => {
       velocity: 7,
       minHeight: 0.05,
       maxHeight: 0.35,
+      hueRotate: false,
+    },
+  });
+
+  PowerGlitch.glitch('.nav-overlay_background', {
+    playMode: 'always',
+    createContainers: true,
+    hideOverflow: true,
+    timing: {
+      duration: 5000,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 1,
+    },
+    shake: {
+      velocity: 6,
+      amplitudeX: 0.005,
+      amplitudeY: 0.005,
+    },
+    slice: {
+      count: 1,
+      velocity: 1,
+      minHeight: 0.01,
+      maxHeight: 0.25,
       hueRotate: false,
     },
   });
@@ -556,7 +583,7 @@ window.Webflow.push(async () => {
     constructor(el) {
       this.el = el[0];
       this.elAll = el;
-      this.chars = '!<>-_\\/[]{}—=+*^?#________';
+      this.chars = '!<>-\\/[]{}—=+*^?#';
       this.update = this.update.bind(this);
     }
     setText(newText) {
@@ -738,7 +765,10 @@ window.Webflow.push(async () => {
       .timeline({
         scrollTrigger: {
           trigger: panel,
-          start: 'top 60%', // 10% of .panel2 enters the bottom of the viewport
+          start: 'top 60%',
+          end: 'bottom center',
+          toggleActions: 'play none play none',
+          // markers: true,
         },
       })
       .fromTo(
@@ -793,10 +823,17 @@ window.Webflow.push(async () => {
             'M0,0 C0,0 0.05,0.05 0.129,0.129 0.14,0.14 0.173,0.137 0.186,0.15 0.205,0.169 0.198,0.214 0.22,0.236 0.241,0.258 0.316,0.281 0.34,0.305 0.375,0.341 0.387,0.434 0.424,0.472 0.444,0.492 0.491,0.471 0.512,0.492 0.542,0.521 0.556,0.592 0.586,0.622 0.617,0.654 0.691,0.662 0.722,0.692 0.765,0.733 0.79,0.811 0.824,0.848 0.928,0.959 1,1 1,1 '
           ),
           onInit: function () {
-            const el = document.querySelectorAll('.incoming-transmission-text');
-            const text = el[0]?.textContent;
-            const fx = new TextScramble(el, 5);
-            fx.setText(text);
+            // const el = document.querySelectorAll('.incoming-transmission-text');
+            // const text = el[0]?.textContent;
+            // const fx = new TextScramble(el, 5);
+            // fx.setText(text);
+
+            const el = document.querySelectorAll('[type-el]');
+            el.forEach((elm) => {
+              const text = elm.querySelector('.incoming-transmission-text').textContent;
+              const fx = new TextScramble(elm.querySelectorAll('.incoming-transmission-text'), 5);
+              fx.setText(text);
+            });
           },
         }
       )
@@ -829,8 +866,6 @@ window.Webflow.push(async () => {
 
   function updatePanelWidth() {
     panelComponents.forEach((panel) => {
-      console.log(panel);
-
       if (panel.querySelector('.panel_box_loader') != null) {
         panel.querySelector('.panel_box_loader').style.minWidth = '0px';
         panel.querySelector('.panel2_box_padding').style.minWidth =
@@ -870,7 +905,7 @@ window.Webflow.push(async () => {
         oldWindowWidth = currentWindowWidth;
         updatePanelWidth();
       }
-    }, 75);
+    }, 50);
   });
 
   window.addEventListener('load', () => {
@@ -924,7 +959,8 @@ window.Webflow.push(async () => {
   }
 
   const proxy = { skew: 0 },
-    skewSetter = gsap.quickSetter('.team-card_component', 'skewY', 'deg'), // fast
+    skewSetter = gsap.quickSetter('.team-card_slide .team-card_component', 'skewY', 'deg'), // fast
+    skewSetter2 = gsap.quickSetter('.team-card_slide .panel_corner-wrap', 'skewY', 'deg'), // fast
     clamp = gsap.utils.clamp(-2, 2); // don't let the skew go beyond 20 degrees.
 
   ScrollTrigger.create({
@@ -938,14 +974,24 @@ window.Webflow.push(async () => {
           duration: 0.8,
           ease: 'power3',
           overwrite: true,
-          onUpdate: () => skewSetter(proxy.skew),
+          onUpdate: () => {
+            skewSetter(proxy.skew);
+            skewSetter2(proxy.skew);
+          },
         });
       }
     },
   });
 
   // make the right edge "stick" to the scroll bar. force3D: true improves performance
-  gsap.set('.team-card_component', { transformOrigin: 'right center', force3D: true });
+  gsap.set('.team-card_slide .team-card_component', {
+    transformOrigin: 'right center',
+    force3D: true,
+  });
+  gsap.set('.team-card_slide .panel_corner-wrap', {
+    transformOrigin: 'right center',
+    force3D: true,
+  });
 
   // calculate distance
   function getPositionAtCenter(element) {
@@ -968,8 +1014,9 @@ window.Webflow.push(async () => {
     scrollTrigger: {
       trigger: '.section_collection-cards',
       start: '10% bottom',
-      end: 'bottom 0%',
+      end: 'bottom 75%',
       scrub: true,
+      // markers: true,
       // once: true,
     },
   });

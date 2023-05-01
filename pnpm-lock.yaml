@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@finsweet/attributes-scrolldisable':
+    specifier: ^1.6.2
+    version: 1.6.2
   '@finsweet/ts-utils':
     specifier: ^0.39.1
     version: 0.39.1
@@ -513,6 +516,13 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
+  /@finsweet/attributes-scrolldisable@1.6.2:
+    resolution: {integrity: sha512-u1ICBmyaV5kQZacTFK/ZIyucm2MpdZLg22djc6jQL4C0neBC1FGgzt8gvPQ5TiXkU2bRFZH3f2ylXMFv8REBrA==}
+    dependencies:
+      body-scroll-lock: 4.0.0-beta.0
+      just-debounce: 1.1.0
+    dev: false
+
   /@finsweet/eslint-config@2.0.4(@typescript-eslint/eslint-plugin@5.57.0)(@typescript-eslint/parser@5.57.0)(eslint-config-prettier@8.8.0)(eslint-plugin-prettier@4.2.1)(eslint-plugin-simple-import-sort@10.0.0)(eslint@8.37.0)(prettier@2.8.7)(typescript@5.0.3):
     resolution: {integrity: sha512-BUDvqkYoQZJCmLAtIiMDYtqt0z97Zfowug0zGEpxzHJVOkMNEJjMlWurqUnu2iEvcrFlx0vaX06JQzpZJOSI3g==}
     peerDependencies:
@@ -886,6 +896,10 @@ packages:
     dependencies:
       is-windows: 1.0.2
     dev: true
+
+  /body-scroll-lock@4.0.0-beta.0:
+    resolution: {integrity: sha512-a7tP5+0Mw3YlUJcGAKUqIBkYYGlYxk2fnCasq/FUph1hadxlTRjF+gAcZksxANnaMnALjxEddmSi/H3OR8ugcQ==}
+    dev: false
 
   /brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
@@ -1931,6 +1945,10 @@ packages:
     optionalDependencies:
       graceful-fs: 4.2.11
     dev: true
+
+  /just-debounce@1.1.0:
+    resolution: {integrity: sha512-qpcRocdkUmf+UTNBYx5w6dexX5J31AKK1OmPwH630a83DdVVUIngk55RSAiIGpQyoH0dlr872VHfPjnQnK1qDQ==}
+    dev: false
 
   /kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
