@@ -904,13 +904,13 @@ window.Webflow.push(async () => {
     if (windowWidth <= 767 && !initCollectionCardSwiper) {
       collectionCardSwiper = new Swiper('.collection-card_container', {
         // wrapperClass: 'div-block-8',
-        // slideClass: 'collection-card',
+        slideClass: 'collection-card_slide',
         effect: 'cards',
         centeredSlides: true,
         cardsEffect: {
           rotate: true,
           perSlideRotate: 3,
-          perSlideOffset: 3,
+          perSlideOffset: 3Ÿ,
           slideShadows: false,
         },
         grabCursor: true,
