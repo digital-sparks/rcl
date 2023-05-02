@@ -333,38 +333,38 @@ window.Webflow.push(async () => {
   };
   randomTeamCard();
 
-  // // smooth page scroll
-  // const pageScroller = new Lenis({
-  //   wrapper: window,
-  //   lerp: 0.2,
-  //   duration: 1.2,
-  //   infinite: false,
+  // smooth page scroll
+  const pageScroller = new Lenis({
+    wrapper: window,
+    lerp: 0.2,
+    duration: 1.2,
+    infinite: false,
+  });
+  function raf(time) {
+    pageScroller.raf(time);
+    requestAnimationFrame(raf);
+  }
+
+  const scrollLinks = document.querySelectorAll('.scroll-navigation_link, .footer_back');
+
+  scrollLinks.forEach((link, index) => {
+    const target: string = link.getAttribute('href') || '';
+    link.setAttribute('data-target', target);
+    link.removeAttribute('href');
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageScroller.scrollTo(target, {
+        lerp: 0.04,
+        // duration: 5,
+      });
+    });
+  });
+
+  // pageScroller.on('scroll', (e) => {
+  //   console.log(pageScroller);
   // });
-  // function raf(time) {
-  //   pageScroller.raf(time);
-  //   requestAnimationFrame(raf);
-  // }
 
-  // const scrollLinks = document.querySelectorAll('.scroll-navigation_link, .footer_back');
-
-  // scrollLinks.forEach((link, index) => {
-  //   const target: string = link.getAttribute('href') || '';
-  //   link.setAttribute('data-target', target);
-  //   link.removeAttribute('href');
-  //   link.addEventListener('click', (e) => {
-  //     e.preventDefault();
-  //     pageScroller.scrollTo(target, {
-  //       lerp: 0.04,
-  //       // duration: 5,
-  //     });
-  //   });
-  // });
-
-  // // pageScroller.on('scroll', (e) => {
-  // //   console.log(pageScroller);
-  // // });
-
-  // requestAnimationFrame(raf);
+  requestAnimationFrame(raf);
 
   // attribute value checker
   function attr(defaultVal, attrVal) {
@@ -454,45 +454,6 @@ window.Webflow.push(async () => {
     //     triggerClickEl.removeClass('is-paused');
     //   }
     // }
-  });
-
-  const collectionCardSwiper = new Swiper('.swiper.collection-card_container', {
-    // wrapperClass: 'div-block-8',
-    // slideClass: 'collection-card',
-    effect: 'cards',
-    centeredSlides: true,
-    cardsEffect: {
-      rotate: true,
-      perSlideRotate: 3,
-      perSlideOffset: 2,
-      slideShadows: false,
-    },
-    grabCursor: true,
-    loop: true,
-    observer: true,
-    resizeObserver: true,
-    breakpoints: {
-      991: {
-        enabled: false,
-      },
-    },
-    navigation: {
-      prevEl: '.swiper_button-prev',
-      nextEl: '.swiper_button-next',
-    },
-    on: {
-      afterInit: function (swiper) {
-        // console.log(swiper);
-        // console.log(swiper.slidesEl);
-        // const randomRotation = [];
-        // swiper.slides.forEach((slide, i) => {
-        //   randomRotation[i] = Math.random() * 8;
-        // });
-        // console.lg
-      },
-    },
-    // keyboard: true,
-    modules: [EffectCards, Navigation],
   });
 
   const collectionCards = document.querySelectorAll('.collection-card_component');
@@ -893,6 +854,8 @@ window.Webflow.push(async () => {
     currentWindowWidth: number = document.documentElement.clientWidth,
     oldWindowWidth: number = currentWindowWidth,
     initTeamCardSwiper = false,
+    initCollectionCardSwiper = false,
+    collectionCardSwiper,
     teamCardSwiper;
 
   window.addEventListener('resize', () => {
@@ -902,6 +865,7 @@ window.Webflow.push(async () => {
       if (oldWindowWidth !== currentWindowWidth) {
         console.log('updated window size');
         swiperCard(currentWindowWidth);
+        initCollectionCard(currentWindowWidth);
         oldWindowWidth = currentWindowWidth;
         updatePanelWidth();
       }
@@ -910,10 +874,99 @@ window.Webflow.push(async () => {
 
   window.addEventListener('load', () => {
     swiperCard(currentWindowWidth);
+    initCollectionCard(currentWindowWidth);
   });
 
   /* END                        */
   /*----------------------------*/
+
+  function getPositionAtCenter(element) {
+    const { top, left, width, height } = element.getBoundingClientRect();
+    return {
+      x: left + width / 2,
+      y: top + height / 2,
+    };
+  }
+
+  function getDistanceBetweenElements(a, b) {
+    const aPosition = getPositionAtCenter(a);
+    const bPosition = getPositionAtCenter(b);
+
+    return {
+      xDistance: (aPosition.x - bPosition.x) / 10,
+      yDistance: (aPosition.y - bPosition.y) / 10,
+    };
+    //return Math.hypot(aPosition.x - bPosition.x, aPosition.y - bPosition.y);
+  }
+
+  function initCollectionCard(windowWidth: number) {
+    console.log(initCollectionCardSwiper);
+    if (windowWidth <= 767 && !initCollectionCardSwiper) {
+      collectionCardSwiper = new Swiper('.collection-card_container', {
+        // wrapperClass: 'div-block-8',
+        // slideClass: 'collection-card',
+        effect: 'cards',
+        centeredSlides: true,
+        cardsEffect: {
+          rotate: true,
+          perSlideRotate: 3,
+          perSlideOffset: 3,
+          slideShadows: false,
+        },
+        grabCursor: true,
+        loop: true,
+        observer: true,
+        resizeObserver: true,
+        breakpoints: {
+          991: {
+            enabled: false,
+          },
+        },
+        navigation: {
+          prevEl: '.swiper_button-prev',
+          nextEl: '.swiper_button-next',
+        },
+        modules: [EffectCards, Navigation],
+      });
+      initCollectionCardSwiper = true;
+    } else if (windowWidth > 767 && initCollectionCardSwiper) {
+      collectionCardSwiper.destroy(true, true);
+      initCollectionCardSwiper = false;
+    }
+  }
+
+  const collectionCardTimeline = gsap.matchMedia();
+  collectionCardTimeline.add('(min-width: 767px)', () => {
+    const cardsTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.section_collection-cards',
+        start: '10% bottom',
+        end: 'bottom 75%',
+        scrub: true,
+        // markers: true,
+      },
+    });
+
+    cardsTl.from('.collection-card_slide', {
+      x: function (index, target, targets) {
+        return getDistanceBetweenElements(
+          document.querySelector('.collection-card_container'),
+          target
+        ).xDistance;
+      },
+      y: function (index, target, targets) {
+        return getDistanceBetweenElements(
+          document.querySelector('.collection-card_container'),
+          target
+        ).yDistance;
+      },
+      rotate: 0,
+      opacity: 0,
+      duration: 0.01,
+      stagger: 0.005,
+      ease: 'power1.out',
+    });
+  });
 
   function swiperCard(windowWidth: number) {
     if (windowWidth <= 1200 && !initTeamCardSwiper) {
@@ -992,53 +1045,6 @@ window.Webflow.push(async () => {
     transformOrigin: 'right center',
     force3D: true,
   });
-
-  // calculate distance
-  function getPositionAtCenter(element) {
-    const { top, left, width, height } = element.getBoundingClientRect();
-    return {
-      x: left + width / 2,
-      y: top + height / 2,
-    };
-  }
-
-  function getDistanceBetweenElements(a, b) {
-    const aPosition = getPositionAtCenter(a);
-    const bPosition = getPositionAtCenter(b);
-
-    return { xDistance: aPosition.x - bPosition.x, yDistance: aPosition.y - bPosition.y };
-    //return Math.hypot(aPosition.x - bPosition.x, aPosition.y - bPosition.y);
-  }
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '.section_collection-cards',
-      start: '10% bottom',
-      end: 'bottom 75%',
-      scrub: true,
-      // markers: true,
-      // once: true,
-    },
-  });
-  // animate the container one way...
-
-  document
-    .querySelectorAll('.hide-mobile-landscape .collection-card_slide')
-    .forEach((collectionCard) => {
-      const distance = getDistanceBetweenElements(
-        document.querySelector('.collection-card_container'),
-        collectionCard
-      );
-
-      tl.from(collectionCard, {
-        x: distance.xDistance / 10,
-        y: distance.yDistance / 10,
-        rotate: 0,
-        opacity: 0,
-        duration: 0.01,
-        ease: 'power1.out',
-      });
-    });
 
   document.querySelector('.date_circle')?.addEventListener('mouseenter', () => {
     gsap.to('.date_circle_line', {
