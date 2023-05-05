@@ -1,7 +1,6 @@
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 
-import Lenis from '@studio-freight/lenis';
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/all';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -16,9 +15,9 @@ import Swiper, { EffectCards, EffectFade, Navigation, Pagination } from 'swiper'
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(CustomEase);
 
-window.Webflow ||= [];
+const Webflow = window.Webflow || [];
 
-window.Webflow.push(async () => {
+Webflow.push(async () => {
   PowerGlitch.glitch('.logo svg', {
     playMode: 'always',
     createContainers: true,
@@ -69,6 +68,32 @@ window.Webflow.push(async () => {
       hueRotate: false,
     },
     pulse: true,
+  });
+
+  PowerGlitch.glitch('.hero-logo', {
+    playMode: 'always',
+    createContainers: true,
+    hideOverflow: false,
+    timing: {
+      duration: 5000,
+    },
+    glitchTimeSpan: {
+      start: 0,
+      end: 1,
+    },
+    shake: {
+      velocity: 5,
+      amplitudeX: 0.005,
+      amplitudeY: 0.005,
+    },
+    slice: {
+      count: 2,
+      velocity: 5,
+      minHeight: 0.001,
+      maxHeight: 0.05,
+      hueRotate: false,
+    },
+    pulse: false,
   });
 
   PowerGlitch.glitch('.panel_corner_svg', {
@@ -333,39 +358,6 @@ window.Webflow.push(async () => {
   };
   randomTeamCard();
 
-  // smooth page scroll
-  const pageScroller = new Lenis({
-    wrapper: window,
-    lerp: 0.2,
-    duration: 1.2,
-    infinite: false,
-  });
-  function raf(time) {
-    pageScroller.raf(time);
-    requestAnimationFrame(raf);
-  }
-
-  const scrollLinks = document.querySelectorAll('.scroll-navigation_link, .footer_back');
-
-  scrollLinks.forEach((link, index) => {
-    const target: string = link.getAttribute('href') || '';
-    link.setAttribute('data-target', target);
-    link.removeAttribute('href');
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      pageScroller.scrollTo(target, {
-        lerp: 0.04,
-        // duration: 5,
-      });
-    });
-  });
-
-  // pageScroller.on('scroll', (e) => {
-  //   console.log(pageScroller);
-  // });
-
-  requestAnimationFrame(raf);
-
   // attribute value checker
   function attr(defaultVal, attrVal) {
     const defaultValType = typeof defaultVal;
@@ -424,7 +416,7 @@ window.Webflow.push(async () => {
           }
           if (scrollScrubSetting) {
             // console.log(pageScroller.velocity);
-            let v = pageScroller.velocity * 0.5; // self.getVelocity() * 0.006;
+            let v = self.getVelocity() * 0.006; // pageScroller.velocity * 0.5;
             v = gsap.utils.clamp(-60, 60, v);
             const scrubTimeline = gsap.timeline({
               onUpdate: () => {
@@ -900,7 +892,6 @@ window.Webflow.push(async () => {
   }
 
   function initCollectionCard(windowWidth: number) {
-    console.log(initCollectionCardSwiper);
     if (windowWidth <= 767 && !initCollectionCardSwiper) {
       collectionCardSwiper = new Swiper('.collection-card_container', {
         // wrapperClass: 'div-block-8',
