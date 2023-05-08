@@ -13,7 +13,7 @@ function raf(time: number) {
   requestAnimationFrame(raf);
 }
 
-const scrollLinks = document.querySelectorAll('.scroll-navigation_link, .footer_back');
+const scrollLinks = document.querySelectorAll('.footer_back');
 
 scrollLinks.forEach((link) => {
   const target: string = link.getAttribute('href') || '';

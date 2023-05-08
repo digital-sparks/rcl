@@ -1,6 +1,7 @@
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 
+import Lenis from '@studio-freight/lenis';
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/all';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -18,6 +19,50 @@ gsap.registerPlugin(CustomEase);
 const Webflow = window.Webflow || [];
 
 Webflow.push(async () => {
+  // smooth page scroll
+  const pageScroller = new Lenis({
+    wrapper: window,
+    lerp: 0.2,
+    duration: 1.2,
+    infinite: false,
+  });
+
+  function raf(time: number) {
+    pageScroller.raf(time);
+    requestAnimationFrame(raf);
+  }
+
+  const scrollLinks = document.querySelectorAll('.scroll-navigation_link, .footer_back');
+
+  scrollLinks.forEach((link) => {
+    const target: string = link.getAttribute('href') || '';
+    link.setAttribute('data-target', target);
+    link.removeAttribute('href');
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageScroller.scrollTo(target, {
+        lerp: 0.04,
+      });
+    });
+  });
+
+  document.querySelectorAll('.scroll-navigation_link').forEach((link) => {
+    const target = link.getAttribute('data-target');
+    ScrollTrigger.create({
+      trigger: target,
+      // onEnter: ({ progress, direction, isActive }) => {
+      //   gsap.to(link, { opacity: 1 });
+      // },
+      // onLeave: ({ progress, direction, isActive }) => {
+      //   gsap.to(link, { opacity: 0.5 });
+      // },
+      onToggle: ({ progress, direction, isActive }) => {
+        gsap.to(link, { opacity: isActive ? 1 : 0.5, duration: 0.2 });
+      },
+    });
+  });
+
+  requestAnimationFrame(raf);
   PowerGlitch.glitch('.logo svg', {
     playMode: 'always',
     createContainers: true,
